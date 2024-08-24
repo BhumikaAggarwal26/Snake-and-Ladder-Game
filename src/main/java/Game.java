@@ -6,10 +6,10 @@ import java.util.Scanner;
 public class Game {
 
     Game(){
-        start();
+        beforeStart();
     }
 
-    void start(){
+    void beforeStart(){
         System.out.println("Enter size of the Board:");
         Scanner s = new Scanner(System.in);
         int size = s.nextInt();
@@ -30,37 +30,38 @@ public class Game {
 
         System.out.println("Enter no of the Snakes");
         int noOfSnakes = s.nextInt();
-        SnakeLadderJump snake = new SnakeLadderJump();
-
-        for(int i=0;i<noOfSnakes;i++){
-            int startPoint = (int)Math.floor(Math.random()*(size));
-            int endPoint = Integer.MAX_VALUE;
-
-            while(endPoint >= startPoint) endPoint = (int)Math.floor(Math.random()*(size));
-
-            HashMap<Integer, Integer> map = new HashMap<>();
-
-            map.put(startPoint, endPoint);
-
-            snake = new SnakeLadderJump(map);
-        }
+        SnakeLadderJump snake = createSnakeLadder(noOfSnakes, size, "snake");
 
         System.out.println("Enter no of the Ladders:");
         int noOfLadders = s.nextInt();
-        SnakeLadderJump ladder = new SnakeLadderJump();
+        SnakeLadderJump ladder = createSnakeLadder(noOfLadders, size, "ladder");
 
-        for(int i=0;i<noOfLadders;i++){
-            int startPoint = (int)Math.floor(Math.random()*(size));
-            int endPoint = Integer.MIN_VALUE;
-            while(endPoint <= startPoint) endPoint = (int)Math.floor(Math.random()*(size));
-
-            HashMap<Integer, Integer> map = new HashMap<>();
-            map.put(startPoint, endPoint);
-            ladder = new SnakeLadderJump(map);
-        }
-
-
+        // Loading everything before start of the game
         Board board = new Board(size, players, new Dice(noOfDice), snake, ladder);
         board.startGame();
+    }
+
+    SnakeLadderJump createSnakeLadder(int num, int size, String type){
+        SnakeLadderJump snakeLadderJump = new SnakeLadderJump();
+
+        for(int i=0;i<num;i++){
+            int startPoint = (int)Math.floor(Math.random()*(size));
+            int endPoint;
+
+            if(type == "snake"){
+                endPoint = Integer.MAX_VALUE;
+                while(endPoint >= startPoint) endPoint = (int)Math.floor(Math.random()*(size));
+            } else{
+                endPoint = Integer.MIN_VALUE;
+                while(endPoint <= startPoint) endPoint = (int)Math.floor(Math.random()*(size));
+            }
+
+            HashMap<Integer, Integer> map = new HashMap<>();
+
+            map.put(startPoint, endPoint);
+            snakeLadderJump = new SnakeLadderJump(map);
+        }
+
+        return snakeLadderJump;
     }
 }
